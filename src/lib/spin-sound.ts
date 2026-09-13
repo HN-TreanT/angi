@@ -1,73 +1,112 @@
 type SpinSfx = {
-  unlock: () => void;
-  setEnabled: (on: boolean) => void;
-  startSpin: () => void;
-  tickSlot: (slot: number, progress: number) => void;
-  win: () => void;
-  stop: () => void;
-};
-
-function clip(src: string, loop = false) {
-  const audio = new Audio(src);
-  audio.preload = "auto";
-  audio.loop = loop;
-  audio.setAttribute("playsinline", "true");
-  return audio;
+  unlock: () => void
+  setEnabled: (on: boolean) => void
+  startSpin: () => void
+  tickSlot: (slot: number, progress: number) => void
+  win: () => void
+  stop: () => void
 }
 
-async function play(audio: HTMLAudioElement) {
+const SPIN_SRC = '/sounds/doraemon_song.mp3'
+const WIN_SRC = '/sounds/sms.mp3'
+
+type WebkitWindow = Window & {
+  webkitAudioContext?: typeof AudioContext
+}
+
+function makeContext() {
+  const Ctor = window.AudioContext || (window as WebkitWindow).webkitAudioContext
+  if (!Ctor) return null
+  return new Ctor()
+}
+
+function htmlClip(src: string, loop: boolean) {
+  const audio = new Audio()
+  audio.src = src
+  audio.preload = 'auto'
+  audio.loop = loop
+  audio.crossOrigin = 'anonymous'
+  audio.setAttribute('playsinline', 'true')
+  audio.setAttribute('webkit-playsinline', 'true')
+  audio.volume = 0.8
+  return audio
+}
+
+function safePause(audio: HTMLAudioElement | null) {
+  if (!audio) return
   try {
-    audio.currentTime = 0;
-    await audio.play();
+    audio.pause()
   } catch {
-    /* browser blocked until a later gesture */
+    /* ignore */
+  }
+  try {
+    if (audio.readyState >= 1) audio.currentTime = 0
+  } catch {
+    /* iOS throws before metadata */
   }
 }
 
-export function createSpinSfx(): SpinSfx {
-  const spin = clip("/sounds/quay.mp3", true);
-  const win = clip("/sounds/sms.mp3");
-  spin.volume = 0.55;
-  win.volume = 0.7;
-  let enabled = true;
+function playNow(audio: HTMLAudioElement) {
+  const run = audio.play()
+  if (run) void run.catch(() => {})
+}
 
-  function halt(audio: HTMLAudioElement) {
-    audio.pause();
-    audio.currentTime = 0;
-    audio.playbackRate = 1;
+export function createSpinSfx(): SpinSfx {
+  let enabled = true
+  let primed = false
+  let ctx: AudioContext | null = null
+  let spinEl: HTMLAudioElement | null = null
+  let winEl: HTMLAudioElement | null = null
+
+  function elements() {
+    if (!spinEl) spinEl = htmlClip(SPIN_SRC, true)
+    if (!winEl) winEl = htmlClip(WIN_SRC, false)
+    return { spin: spinEl, win: winEl }
+  }
+
+  function resumeContext() {
+    if (!ctx) ctx = makeContext()
+    if (ctx && ctx.state !== 'running') void ctx.resume()
   }
 
   return {
     unlock() {
-      void spin.load();
-      void win.load();
+      resumeContext()
+      const { spin, win } = elements()
+      if (primed) return
+      primed = true
+      spin.load()
+      win.load()
     },
     setEnabled(on) {
-      enabled = on;
+      enabled = on
       if (!on) {
-        halt(spin);
-        halt(win);
+        safePause(spinEl)
+        safePause(winEl)
       }
     },
     startSpin() {
-      halt(win);
-      if (!enabled) return;
-      spin.loop = true;
-      spin.playbackRate = 1.12;
-      void play(spin);
+      resumeContext()
+      const { spin, win } = elements()
+      safePause(win)
+      if (!enabled) return
+      spin.loop = true
+      playNow(spin)
     },
-    tickSlot(_slot, progress) {
-      if (!enabled) return;
-      spin.playbackRate = Math.max(0.72, 1.15 - progress * 0.5);
+    tickSlot() {
+      /* do not change playbackRate — iOS often goes silent */
     },
     win() {
-      halt(spin);
-      if (!enabled) return;
-      void play(win);
+      resumeContext()
+      const { spin, win } = elements()
+      safePause(spin)
+      if (!enabled) return
+      win.loop = false
+      playNow(win)
     },
     stop() {
-      halt(spin);
-      halt(win);
+      safePause(spinEl)
+      safePause(winEl)
     },
-  };
+  }
 }

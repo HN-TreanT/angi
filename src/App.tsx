@@ -296,7 +296,10 @@ export default function App() {
   )
 
   return (
-    <div className={`site-shell ${spinning ? 'is-spinning' : ''}`}>
+    <div
+      className={`site-shell ${spinning ? 'is-spinning' : ''}`}
+      onPointerDown={() => sfx.current.unlock()}
+    >
       <SkyDecor />
       <header>
         <a href="#/" className="brand" onClick={() => setTab('spin')}>
@@ -337,7 +340,7 @@ export default function App() {
             <div className="intro">
               <div className="intro-copy">
                 <h1>MỞ HÒM ĂN TRƯA</h1>
-                <p>Xanh – đỏ – vàng, tick địa chỉ rồi quay món cute cute.</p>
+                <p>Xanh – đỏ – vàng, tick địa chỉ rồi quay món nka nka.</p>
               </div>
             </div>
             <p className="global-counter">
