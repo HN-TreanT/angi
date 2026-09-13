@@ -25,7 +25,7 @@ async function play(audio: HTMLAudioElement) {
 }
 
 export function createSpinSfx(): SpinSfx {
-  const spin = clip("/sounds/doraemon_song.mp3", true);
+  const spin = clip("/sounds/quay.mp3", true);
   const win = clip("/sounds/sms.mp3");
   spin.volume = 0.55;
   win.volume = 0.7;
