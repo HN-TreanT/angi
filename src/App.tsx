@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
-import { ArrowUpRight, Leaf, MapPin, Sparkles, Star, Utensils, Volume2, VolumeX } from 'lucide-react'
+import { ArrowUpRight, Leaf, MapPin, Sparkles, Star, Volume2, VolumeX } from 'lucide-react'
 import { FoodImage, MysteryArt } from './components/FoodImage'
+import { SkyDecor, SpinFX } from './components/Decor'
 import { PlacesLog } from './components/PlacesLog'
 import { foods, type Food } from './lib/foods'
 import {
@@ -270,13 +271,14 @@ export default function App() {
   )
 
   return (
-    <div className="site-shell">
+    <div className={`site-shell ${spinning ? 'is-spinning' : ''}`}>
+      <SkyDecor />
       <header>
         <a href="#/" className="brand" onClick={() => setTab('spin')}>
-          <span className="brand-icon">
-            <Utensils size={18} />
+          <span className="brand-icon" aria-hidden="true">
+            <Sparkles size={18} />
           </span>
-          {/* baongocangi<span className="brand-dot">.</span> */}
+          Bão Ngọc ăn gì<span className="brand-dot">?</span>
         </a>
         <nav className="tabs">
           <button className={tab === 'spin' ? 'active' : ''} onClick={() => setTab('spin')} disabled={spinning}>
@@ -301,7 +303,10 @@ export default function App() {
         {tab === 'spin' ? (
           <>
             <div className="intro">
-              <h1>Mở hòm ăn trưa</h1>
+              <div className="intro-copy">
+                <h1>MỞ HÒM ĂN TRƯA</h1>
+                <p>Xanh – đỏ – vàng, tick địa chỉ rồi quay món cute cute.</p>
+              </div>
             </div>
             <p className="global-counter">
               Bạn đã mở <strong>{spins.toLocaleString('vi-VN')}</strong> hòm trên máy này
@@ -321,7 +326,7 @@ export default function App() {
                 <span>1</span>
                 <div>
                   <strong>Chọn địa chỉ để lọc hòm</strong>
-                  <p>Tick một hoặc nhiều địa chỉ — hòm chỉ quay món đã lưu ở những chỗ đó.</p>
+                  <p>Tick chỗ muốn ăn — hòm chỉ quay món đã lưu ở những địa chỉ đó.</p>
                 </div>
               </div>
               <div className="filters location-filters">
@@ -416,18 +421,21 @@ export default function App() {
                 <p className="address-hint">Chưa chọn địa chỉ thì hòm quay theo pool bên dưới (catalog / quán đã ăn).</p>
               )}
             </section>
-            <section className="case-panel" aria-label="Mở hòm món ăn">
-              <div className={`reel-window ${moving ? 'is-spinning' : ''}`} ref={viewport}>
-                <div className="selector-line" />
-                <div className="reel-track" ref={attachTrack}>
-                  {reel
-                    .filter(({ id }) => id >= visibleStart && id < visibleStart + 12)
-                    .map(({ food, id }) => (
-                      <Card key={id} food={food} slot={id} />
-                    ))}
+            <section className="case-stage" aria-label="Mở hòm món ăn">
+              {moving && <SpinFX />}
+              <div className="case-panel">
+                <div className={`reel-window ${moving ? 'is-spinning' : ''}`} ref={viewport}>
+                  <div className="selector-line" />
+                  <div className="reel-track" ref={attachTrack}>
+                    {reel
+                      .filter(({ id }) => id >= visibleStart && id < visibleStart + 12)
+                      .map(({ food, id }) => (
+                        <Card key={id} food={food} slot={id} />
+                      ))}
+                  </div>
+                  <div className="reel-fade left" />
+                  <div className="reel-fade right" />
                 </div>
-                <div className="reel-fade left" />
-                <div className="reel-fade right" />
               </div>
             </section>
             <div className="control-bar">
@@ -466,7 +474,7 @@ export default function App() {
               </div>
               <div className="open-wrap">
                 <button className="open-button" disabled={spinning || !eligible.length} onClick={openCase}>
-                  <Sparkles size={21} /> {spinning ? 'ĐANG MỞ...' : addressesPicked ? 'MỞ HÒM THEO ĐỊA CHỈ' : result ? 'MỞ LẠI' : 'MỞ HÒM'}
+                  <Sparkles size={21} /> {spinning ? 'ĐANG QUAY...' : addressesPicked ? 'MỞ HÒM THEO ĐỊA CHỈ' : result ? 'MỞ LẠI' : 'MỞ HÒM'}
                 </button>
               </div>
             </div>
@@ -506,7 +514,7 @@ export default function App() {
           />
         )}
         <footer>
-          <span>baongocangi. · catalog clone từ truanayangi · quán lưu Postgres</span>
+          <span>Bão Ngọc ăn gì · quán lưu Postgres</span>
           <span>{eligible.length} món trong pool hiện tại</span>
         </footer>
       </main>
@@ -514,7 +522,10 @@ export default function App() {
       {revealed && result && (
         <div className="modal-backdrop winner-backdrop" onClick={() => setRevealed(false)}>
           <div className="winner-dialog" onClick={(e) => e.stopPropagation()}>
-            <span className="winner-label">VẬT PHẨM MỚI</span>
+            <div className="confetti" aria-hidden="true">
+              <i /><i /><i /><i /><i /><i />
+            </div>
+            <span className="winner-label">MÓN MAY MẮN</span>
             <h2 className="winner-title">{result.name}</h2>
             <p className="winner-description">
               Giá tham khảo · {priceLabel(result.price)} / người

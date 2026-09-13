@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { MapPin, Pencil, Plus, Star, Trash2, UtensilsCrossed, RotateCcw } from 'lucide-react'
+import { MapPin, Pencil, Plus, Star, Trash2, RotateCcw } from 'lucide-react'
 import { foods } from '../lib/foods'
 import { mapsUrl, placeToFood, type Place, type PlaceDraft } from '../lib/places'
 import { provinceById, shortPlaceName, sortedProvinces } from '../lib/vietnam'
@@ -209,7 +209,7 @@ export function PlacesLog({
 
       {!places.length && (
         <div className="empty-places">
-          <UtensilsCrossed size={28} />
+          <span className="empty-spark" aria-hidden="true" />
           <p>Chưa có quán nào. Thêm món đã ăn ở Hà Nội hoặc tỉnh khác để lần sau quay đúng địa chỉ.</p>
         </div>
       )}
