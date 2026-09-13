@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { MapPin, Pencil, Plus, Star, Trash2, UtensilsCrossed, RotateCcw } from 'lucide-react'
+import { MapPin, Pencil, Plus, Star, Trash2, RotateCcw } from 'lucide-react'
 import { foods } from '../lib/foods'
 import { mapsUrl, placeToFood, type Place, type PlaceDraft } from '../lib/places'
 import { provinceById, shortPlaceName, sortedProvinces } from '../lib/vietnam'
@@ -131,7 +131,7 @@ export function PlacesLog({
     <section className="places-page">
       <div className="section-heading places-heading">
         <div>
-          <span className="eyebrow">Nhật ký quán</span>
+          <span className="eyebrow">Nhật ký của Mèo Ngọc</span>
           <h2>
             Món đã ăn <span>{places.length.toString().padStart(2, '0')}</span>
           </h2>
@@ -209,7 +209,7 @@ export function PlacesLog({
 
       {!places.length && (
         <div className="empty-places">
-          <UtensilsCrossed size={28} />
+          <img src="/mascots/mascot-ngoc.png" alt="" width={140} height={140} />
           <p>Chưa có quán nào. Thêm món đã ăn ở Hà Nội hoặc tỉnh khác để lần sau quay đúng địa chỉ.</p>
         </div>
       )}

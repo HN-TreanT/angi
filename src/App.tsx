@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
-import { ArrowUpRight, Leaf, MapPin, Sparkles, Star, Utensils, Volume2, VolumeX } from 'lucide-react'
+import { ArrowUpRight, Leaf, MapPin, Sparkles, Star, Volume2, VolumeX } from 'lucide-react'
 import { FoodImage, MysteryArt } from './components/FoodImage'
+import { Mascot, SkyDecor } from './components/Mascot'
 import { PlacesLog } from './components/PlacesLog'
 import { foods, type Food } from './lib/foods'
 import {
@@ -270,13 +271,14 @@ export default function App() {
   )
 
   return (
-    <div className="site-shell">
+    <div className={`site-shell ${spinning ? 'is-spinning' : ''}`}>
+      <SkyDecor />
       <header>
         <a href="#/" className="brand" onClick={() => setTab('spin')}>
           <span className="brand-icon">
-            <Utensils size={18} />
+            <Mascot />
           </span>
-          {/* baongocangi<span className="brand-dot">.</span> */}
+          Bão Ngọc ăn gì<span className="brand-dot">?</span>
         </a>
         <nav className="tabs">
           <button className={tab === 'spin' ? 'active' : ''} onClick={() => setTab('spin')} disabled={spinning}>
@@ -301,7 +303,12 @@ export default function App() {
         {tab === 'spin' ? (
           <>
             <div className="intro">
-              <h1>Mở hòm ăn trưa</h1>
+              <Mascot className="hero-mascot" />
+              <div className="intro-copy">
+                <h1>Mở hòm ăn trưa</h1>
+                <p>Mèo Ngọc kéo hòm báu — tick địa chỉ rồi quay món cute cute.</p>
+              </div>
+              <Mascot pose="chest" className="hero-chest" />
             </div>
             <p className="global-counter">
               Bạn đã mở <strong>{spins.toLocaleString('vi-VN')}</strong> hòm trên máy này
@@ -321,7 +328,7 @@ export default function App() {
                 <span>1</span>
                 <div>
                   <strong>Chọn địa chỉ để lọc hòm</strong>
-                  <p>Tick một hoặc nhiều địa chỉ — hòm chỉ quay món đã lưu ở những chỗ đó.</p>
+                  <p>Tick chỗ muốn ăn — Mèo Ngọc chỉ kéo món đúng những địa chỉ đó.</p>
                 </div>
               </div>
               <div className="filters location-filters">
@@ -473,7 +480,7 @@ export default function App() {
             <section className="inventory">
               <div className="section-heading">
                 <div>
-                  <span className="eyebrow">Trong hòm</span>
+                  <span className="eyebrow">Trong hòm của Ngọc</span>
                   <h2>
                     Vật phẩm trong hòm <span>{eligible.length.toString().padStart(2, '0')}</span>
                   </h2>
@@ -506,7 +513,7 @@ export default function App() {
           />
         )}
         <footer>
-          <span>baongocangi. · catalog clone từ truanayangi · quán lưu Postgres</span>
+          <span>Bão Ngọc ăn gì · Mèo Ngọc canh hòm · quán lưu Postgres</span>
           <span>{eligible.length} món trong pool hiện tại</span>
         </footer>
       </main>
@@ -514,7 +521,11 @@ export default function App() {
       {revealed && result && (
         <div className="modal-backdrop winner-backdrop" onClick={() => setRevealed(false)}>
           <div className="winner-dialog" onClick={(e) => e.stopPropagation()}>
-            <span className="winner-label">VẬT PHẨM MỚI</span>
+            <div className="confetti" aria-hidden="true">
+              <i /><i /><i /><i /><i /><i />
+            </div>
+            <Mascot pose="win" className="winner-mascot" />
+            <span className="winner-label">MÓN MAY MẮN</span>
             <h2 className="winner-title">{result.name}</h2>
             <p className="winner-description">
               Giá tham khảo · {priceLabel(result.price)} / người
