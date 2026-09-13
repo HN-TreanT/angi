@@ -18,6 +18,7 @@ import {
 import { createPlaceApi, deletePlaceApi, fetchPlaces, healthCheck, updatePlaceApi } from './lib/api'
 import { createPlace, loadPlaces, mapsUrl, placeToFood, savePlaces, type Place, type PlaceDraft } from './lib/places'
 import { provinceById, sortedProvinces, foldVi, matchesPlaceText } from './lib/vietnam'
+import { createSpinSfx } from './lib/spin-sound'
 
 type Tab = 'spin' | 'places'
 type PoolMode = 'catalog' | 'eaten' | 'both'
@@ -41,7 +42,13 @@ export default function App() {
   const [moving, setMoving] = useState(false)
   const [result, setResult] = useState<Food | null>(null)
   const [revealed, setRevealed] = useState(false)
-  const [sound, setSound] = useState(true)
+  const [sound, setSound] = useState(() => {
+    try {
+      return localStorage.getItem('baongocangi-sound') !== 'off'
+    } catch {
+      return true
+    }
+  })
   const [reel, setReel] = useState(() => foods.slice(0, 12).map((food, id) => ({ food, id })))
   const [visibleStart, setVisibleStart] = useState(0)
   const [editing, setEditing] = useState<Place | null>(null)
@@ -53,6 +60,7 @@ export default function App() {
   const track = useRef<HTMLDivElement>(null)
   const position = useRef(-400)
   const frame = useRef(0)
+  const sfx = useRef(createSpinSfx())
 
   const attachTrack = useCallback((node: HTMLDivElement | null) => {
     track.current = node
@@ -177,7 +185,19 @@ export default function App() {
     )
   }, [eligible, selector, spinning])
 
-  useEffect(() => () => cancelAnimationFrame(frame.current), [])
+  useEffect(() => () => {
+    cancelAnimationFrame(frame.current)
+    sfx.current.stop()
+  }, [])
+
+  useEffect(() => {
+    sfx.current.setEnabled(sound)
+    try {
+      localStorage.setItem('baongocangi-sound', sound ? 'on' : 'off')
+    } catch {
+      /* ignore */
+    }
+  }, [sound])
 
   function openCase() {
     if (busy.current || !eligible.length || !selector || !track.current || !viewport.current) return
@@ -205,6 +225,8 @@ export default function App() {
     setSpinning(true)
     setMoving(true)
     setResult(null)
+    sfx.current.unlock()
+    sfx.current.startSpin()
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const duration = reduced ? 180 : profile.durationMs
     const started = performance.now()
@@ -214,6 +236,8 @@ export default function App() {
       const next = start + (end - start) * spinProgress(progress, profile.friction)
       position.current = next
       const firstVisible = Math.max(0, Math.floor(-next / step))
+      const centerSlot = Math.floor((width / 2 - next) / step)
+      sfx.current.tickSlot(centerSlot, progress)
       if (firstVisible - renderedStart >= 4 || firstVisible < renderedStart) {
         renderedStart = Math.max(0, firstVisible - 2)
         setVisibleStart(renderedStart)
@@ -229,6 +253,7 @@ export default function App() {
       setResult(winner)
       setRevealed(true)
       setSpins((n) => n + 1)
+      sfx.current.win()
     }
     frame.current = requestAnimationFrame(animate)
   }
@@ -278,7 +303,7 @@ export default function App() {
           <span className="brand-icon" aria-hidden="true">
             <Sparkles size={18} />
           </span>
-          Bão Ngọc ăn gì<span className="brand-dot">?</span>
+          HÔM NAY ĂN GÌ?
         </a>
         <nav className="tabs">
           <button className={tab === 'spin' ? 'active' : ''} onClick={() => setTab('spin')} disabled={spinning}>
@@ -289,7 +314,14 @@ export default function App() {
           </button>
         </nav>
         <div className="header-actions">
-          <button className="sound-button" onClick={() => setSound(!sound)} aria-label={sound ? 'Tắt âm thanh' : 'Bật âm thanh'}>
+          <button
+            className="sound-button"
+            onClick={() => {
+              sfx.current.unlock()
+              setSound(!sound)
+            }}
+            aria-label={sound ? 'Tắt âm thanh' : 'Bật âm thanh'}
+          >
             {sound ? <Volume2 size={18} /> : <VolumeX size={18} />}
             <span>{sound ? 'Âm thanh bật' : 'Âm thanh tắt'}</span>
           </button>
@@ -514,7 +546,7 @@ export default function App() {
           />
         )}
         <footer>
-          <span>Bão Ngọc ăn gì · quán lưu Postgres</span>
+          <span>HÔM NAY ĂN GÌ?</span>
           <span>{eligible.length} món trong pool hiện tại</span>
         </footer>
       </main>
