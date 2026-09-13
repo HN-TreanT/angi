@@ -1,0 +1,45 @@
+# db: Postgres. api: Express. web: Vite build + nginx.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: baongocangi-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: baongocangi
+      POSTGRES_PASSWORD: baongocangi
+      POSTGRES_DB: baongocangi
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./server/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U baongocangi -d baongocangi"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  api:
+    build: ./server
+    container_name: baongocangi-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://baongocangi:baongocangi@db:5432/baongocangi
+      PORT: "3001"
+    ports:
+      - "3001:3001"
+
+  web:
+    build: .
+    container_name: baongocangi-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+
+volumes:
+  pgdata:
