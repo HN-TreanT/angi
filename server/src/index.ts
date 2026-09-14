@@ -14,6 +14,7 @@ type PlaceRow = {
   price: number
   notes: string
   image: number | null
+  photo: string | null
   created_at: Date
 }
 
@@ -28,6 +29,7 @@ type PlaceDraft = {
   price: number
   notes?: string
   image?: number | null
+  photo?: string | null
 }
 
 function toPlace(row: PlaceRow) {
@@ -44,7 +46,20 @@ function toPlace(row: PlaceRow) {
     notes: row.notes,
     createdAt: new Date(row.created_at).getTime(),
     image: row.image ?? undefined,
+    photo: row.photo ?? undefined,
   }
+}
+
+function parsePhoto(value: unknown) {
+  if (value == null || value === '') return null
+  const photo = String(value)
+  if (!photo.startsWith('data:image/')) {
+    throw Object.assign(new Error('Ảnh không hợp lệ'), { status: 400 })
+  }
+  if (photo.length > 1_200_000) {
+    throw Object.assign(new Error('Ảnh quá nặng, hãy chọn ảnh nhỏ hơn'), { status: 400 })
+  }
+  return photo
 }
 
 function parseDraft(body: PlaceDraft) {
@@ -75,12 +90,13 @@ function parseDraft(body: PlaceDraft) {
     price: Math.round(price),
     notes: String(body.notes ?? ''),
     image: body.image == null || body.image < 0 ? null : Math.round(Number(body.image)),
+    photo: parsePhoto(body.photo),
   }
 }
 
 const app = express()
 app.use(cors({ origin: true }))
-app.use(express.json())
+app.use(express.json({ limit: '2mb' }))
 
 app.get('/api/health', (_req, res) => {
   res.json({ ok: true })
@@ -112,10 +128,10 @@ app.post('/api/places', async (req, res, next) => {
   try {
     const draft = parseDraft(req.body as PlaceDraft)
     const { rows } = await pool.query<PlaceRow>(
-      `INSERT INTO places (dish_name, restaurant, address, province_id, district_id, stars, eat_again, price, notes, image)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      `INSERT INTO places (dish_name, restaurant, address, province_id, district_id, stars, eat_again, price, notes, image, photo)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
        RETURNING *`,
-      [draft.dishName, draft.restaurant, draft.address, draft.provinceId, draft.districtId, draft.stars, draft.eatAgain, draft.price, draft.notes, draft.image],
+      [draft.dishName, draft.restaurant, draft.address, draft.provinceId, draft.districtId, draft.stars, draft.eatAgain, draft.price, draft.notes, draft.image, draft.photo],
     )
     res.status(201).json(toPlace(rows[0]))
   } catch (error) {
@@ -128,10 +144,10 @@ app.put('/api/places/:id', async (req, res, next) => {
     const draft = parseDraft(req.body as PlaceDraft)
     const { rows } = await pool.query<PlaceRow>(
       `UPDATE places
-       SET dish_name=$1, restaurant=$2, address=$3, province_id=$4, district_id=$5, stars=$6, eat_again=$7, price=$8, notes=$9, image=$10
-       WHERE id=$11
+       SET dish_name=$1, restaurant=$2, address=$3, province_id=$4, district_id=$5, stars=$6, eat_again=$7, price=$8, notes=$9, image=$10, photo=$11
+       WHERE id=$12
        RETURNING *`,
-      [draft.dishName, draft.restaurant, draft.address, draft.provinceId, draft.districtId, draft.stars, draft.eatAgain, draft.price, draft.notes, draft.image, String(req.params.id)],
+      [draft.dishName, draft.restaurant, draft.address, draft.provinceId, draft.districtId, draft.stars, draft.eatAgain, draft.price, draft.notes, draft.image, draft.photo, String(req.params.id)],
     )
     if (!rows[0]) {
       res.status(404).json({ error: 'Không tìm thấy quán' })
@@ -166,6 +182,7 @@ const port = Number(process.env.PORT ?? 3001)
 
 await waitForDb()
 await ensureSchema()
+await pool.query('ALTER TABLE places ADD COLUMN IF NOT EXISTS photo TEXT')
 app.listen(port, '0.0.0.0', () => {
   console.log(`baongocangi api http://localhost:${port}`)
 })

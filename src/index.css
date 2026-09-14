@@ -196,12 +196,21 @@ main { max-width: 1240px; margin: auto; padding: 36px 40px 0; }
   text-shadow: none;
   -webkit-text-stroke: 0;
 }
-.intro-copy { text-align: center; }
+.intro-copy { text-align: left; }
 .intro-copy p {
   margin: 6px 0 0;
   color: var(--muted);
   font-weight: 700;
 }
+.title-cat {
+  width: min(112px, 28vw);
+  height: min(112px, 28vw);
+  object-fit: contain;
+  flex: none;
+  animation: bob 3s ease-in-out infinite;
+  filter: drop-shadow(0 8px 0 #00a0e922);
+}
+.site-shell.is-spinning .title-cat { animation-duration: 0.35s; }
 .site-shell.is-spinning .intro h1 { animation: banner-pop 0.28s ease-in-out infinite alternate; }
 .global-counter { text-align: center; margin: 0 0 18px; color: var(--muted); font-size: 13px; font-weight: 700; }
 .global-counter strong { font-weight: 800; color: var(--dora-red); }
@@ -327,6 +336,11 @@ main { max-width: 1240px; margin: auto; padding: 36px 40px 0; }
   height: 150px;
   margin: 0 auto;
   aspect-ratio: 1;
+}
+.food-image.photo {
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
 }
 .custom-food-art { display: grid; place-items: center; color: var(--dora-ink); background: radial-gradient(ellipse, #00a0e928, transparent); }
 .card-copy {
@@ -715,6 +729,29 @@ footer {
 .form-head h3 { margin: 0 0 6px; font-size: 24px; font-weight: 700; font-family: var(--font); color: var(--dora-ink); }
 .form-head p { margin: 0; color: var(--muted); font-size: 13px; font-weight: 700; }
 .place-form textarea { height: auto; padding: 10px; resize: vertical; }
+.place-form input[type='file'] { height: auto; padding: 8px; }
+.photo-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.photo-preview img {
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 2px solid #00a0e9;
+}
+.photo-hint {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
 .stars-field { border: 2px solid #b7e4ff; padding: 12px; border-radius: 16px; }
 .stars-field legend { padding: 0 6px; font-weight: 800; }
 .star-picker { display: flex; gap: 4px; }
@@ -926,6 +963,8 @@ footer {
   .api-status, .sound-button span { display: none; }
   .sound-button { padding: 8px; }
   main { padding: 20px 14px 0; padding-bottom: env(safe-area-inset-bottom); }
+  .intro { gap: 10px; }
+  .title-cat { width: 72px; height: 72px; }
   .filters, .location-filters { width: 100%; }
   .budget, .location-filters .budget { width: 100%; flex: 1 1 100%; }
   .budget select, .budget input,

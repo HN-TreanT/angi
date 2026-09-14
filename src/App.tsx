@@ -338,9 +338,10 @@ export default function App() {
         {tab === 'spin' ? (
           <>
             <div className="intro">
+              <img className="title-cat" src="/doraemon1.png" alt="" />
               <div className="intro-copy">
                 <h1>MỞ HÒM ĂN TRƯA</h1>
-                <p>Xanh – đỏ – vàng, tick địa chỉ rồi quay món nka nka.</p>
+                <p>Xanh – đỏ – vàng, tick địa chỉ rồi quay món nka.</p>
               </div>
             </div>
             <p className="global-counter">

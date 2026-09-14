@@ -2,6 +2,16 @@ import { Utensils } from 'lucide-react'
 import type { Food } from '../lib/foods'
 
 export function FoodImage({ food }: { food: Food }) {
+  if (food.photo) {
+    return (
+      <div
+        role="img"
+        aria-label={food.name}
+        className="food-image photo"
+        style={{ backgroundImage: `url(${food.photo})` }}
+      />
+    )
+  }
   if (food.image < 0) {
     return (
       <div className="food-image custom-food-art" role="img" aria-label={food.name}>

@@ -17,6 +17,7 @@ export type Food = {
   districtName?: string
   stars?: number
   eatAgain?: boolean
+  photo?: string
 }
 
 type CatalogFood = {

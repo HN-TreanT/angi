@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { MapPin, Pencil, Plus, Star, Trash2, RotateCcw } from 'lucide-react'
+import { MapPin, Pencil, Plus, Star, Trash2, RotateCcw, ImagePlus, X } from 'lucide-react'
 import { foods } from '../lib/foods'
 import { mapsUrl, placeToFood, type Place, type PlaceDraft } from '../lib/places'
+import { compressPhoto } from '../lib/photo'
 import { provinceById, shortPlaceName, sortedProvinces } from '../lib/vietnam'
 import { FoodImage } from './FoodImage'
 
@@ -15,6 +16,7 @@ const EMPTY_DRAFT: PlaceDraft = {
   eatAgain: true,
   price: 50,
   notes: '',
+  photo: undefined,
 }
 
 type SortKey = 'area' | 'stars' | 'newest' | 'dish'
@@ -348,6 +350,41 @@ export function PlacesLog({
               {draft.eatAgain ? 'Xứng đáng ăn lại' : 'Không cần ăn lại'}
             </label>
             <label className="full">
+              Ảnh món
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0]
+                  e.target.value = ''
+                  if (!file) return
+                  try {
+                    const photo = await compressPhoto(file)
+                    setDraft((current) => ({ ...current, photo }))
+                  } catch {
+                    setDraft((current) => current)
+                  }
+                }}
+              />
+              {draft.photo ? (
+                <span className="photo-preview">
+                  <img src={draft.photo} alt="Ảnh món đã chọn" />
+                  <button
+                    type="button"
+                    className="ghost"
+                    onClick={() => setDraft((current) => ({ ...current, photo: undefined }))}
+                  >
+                    <X size={14} /> Gỡ ảnh
+                  </button>
+                </span>
+              ) : (
+                <span className="photo-hint">
+                  <ImagePlus size={16} /> Chụp hoặc chọn ảnh từ máy
+                </span>
+              )}
+            </label>
+            <label className="full">
               Ghi chú
               <textarea
                 rows={3}
@@ -383,6 +420,7 @@ function toDraft(place: Place): PlaceDraft {
     price: place.price,
     notes: place.notes,
     image: place.image,
+    photo: place.photo,
   }
 }
 

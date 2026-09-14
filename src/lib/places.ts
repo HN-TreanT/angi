@@ -17,6 +17,7 @@ export type Place = {
   notes: string
   createdAt: number
   image?: number
+  photo?: string
 }
 
 export type PlaceDraft = Omit<Place, 'id' | 'createdAt'>
@@ -54,6 +55,7 @@ export function placeToFood(place: Place): Food {
     price,
     rarity: priceRarity(price),
     image: place.image ?? matched?.image ?? -1,
+    photo: place.photo,
     veg: matched?.veg,
     quip: place.notes || matched?.quip || '',
     customId: `place-${place.id}`,

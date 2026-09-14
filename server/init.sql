@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS places (
   price INTEGER NOT NULL DEFAULT 50,
   notes TEXT NOT NULL DEFAULT '',
   image INTEGER,
+  photo TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
