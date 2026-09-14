@@ -68,6 +68,12 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Chụp ảnh món đã ăn để lưu vào nhật ký quán.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Chọn ảnh món đã ăn từ thư viện.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Lưu ảnh món đã ăn nếu cần.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Kết nối API Hôm nay ăn gì? trên máy trong mạng LAN.</string>
 	<key>NSAppTransportSecurity</key>

@@ -50,6 +50,7 @@ export function PlacesLog({
   const [minStars, setMinStars] = useState(0)
   const [sortKey, setSortKey] = useState<SortKey>('area')
   const [groupKey, setGroupKey] = useState<GroupKey>('district')
+  const [photoError, setPhotoError] = useState('')
 
   useEffect(() => {
     if (presetDish) onPresetConsumed?.()
@@ -109,12 +110,14 @@ export function PlacesLog({
 
   function openNew(dish = '') {
     setDraft({ ...EMPTY_DRAFT, dishName: dish || presetDish || '' })
+    setPhotoError('')
     onEdit(null)
     setFormOpen(true)
   }
 
   function openEdit(place: Place) {
     setDraft(toDraft(place))
+    setPhotoError('')
     onEdit(place)
     setFormOpen(true)
   }
@@ -349,21 +352,21 @@ export function PlacesLog({
               <RotateCcw size={16} />
               {draft.eatAgain ? 'Xứng đáng ăn lại' : 'Không cần ăn lại'}
             </label>
-            <label className="full">
+            <label className="full photo-field">
               Ảnh món
               <input
                 type="file"
                 accept="image/*"
-                capture="environment"
                 onChange={async (e) => {
                   const file = e.target.files?.[0]
                   e.target.value = ''
                   if (!file) return
+                  setPhotoError('')
                   try {
                     const photo = await compressPhoto(file)
                     setDraft((current) => ({ ...current, photo }))
-                  } catch {
-                    setDraft((current) => current)
+                  } catch (error) {
+                    setPhotoError(error instanceof Error ? error.message : 'Không đọc được ảnh')
                   }
                 }}
               />
@@ -373,16 +376,20 @@ export function PlacesLog({
                   <button
                     type="button"
                     className="ghost"
-                    onClick={() => setDraft((current) => ({ ...current, photo: undefined }))}
+                    onClick={() => {
+                      setPhotoError('')
+                      setDraft((current) => ({ ...current, photo: undefined }))
+                    }}
                   >
                     <X size={14} /> Gỡ ảnh
                   </button>
                 </span>
               ) : (
                 <span className="photo-hint">
-                  <ImagePlus size={16} /> Chụp hoặc chọn ảnh từ máy
+                  <ImagePlus size={16} /> Chụp hoặc chọn ảnh từ thư viện
                 </span>
               )}
+              {photoError ? <span className="photo-error">{photoError}</span> : null}
             </label>
             <label className="full">
               Ghi chú

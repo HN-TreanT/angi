@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'app_state.dart';
 import 'catalog.dart';
 import 'food_art.dart';
 import 'models.dart';
+import 'photo.dart';
 import 'theme.dart';
 
 class PlacesPage extends StatelessWidget {
@@ -140,6 +142,9 @@ class _PlaceFormState extends State<PlaceForm> {
   late int _stars = widget.editing?.stars ?? 4;
   late bool _eatAgain = widget.editing?.eatAgain ?? true;
   late int _price = widget.editing?.price ?? 50;
+  late String? _photo = widget.editing?.photo;
+  var _photoBusy = false;
+  String _photoError = '';
 
   @override
   void dispose() {
@@ -163,10 +168,29 @@ class _PlaceFormState extends State<PlaceForm> {
         'eatAgain': _eatAgain,
         'price': _price,
         'notes': _notes.text.trim(),
+        'image': widget.editing?.image,
+        'photo': _photo,
       },
       id: widget.editing?.id,
     );
     if (mounted) Navigator.pop(context);
+  }
+
+  Future<void> _pickPhoto(ImageSource source) async {
+    setState(() {
+      _photoBusy = true;
+      _photoError = '';
+    });
+    try {
+      final photo = await pickDishPhoto(source);
+      if (!mounted) return;
+      if (photo != null) setState(() => _photo = photo);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _photoError = error.toString().replaceFirst('Exception: ', ''));
+    } finally {
+      if (mounted) setState(() => _photoBusy = false);
+    }
   }
 
   @override
@@ -235,10 +259,75 @@ class _PlaceFormState extends State<PlaceForm> {
               value: _eatAgain,
               onChanged: (v) => setState(() => _eatAgain = v),
             ),
+            const Text('Ảnh món', style: TextStyle(fontWeight: FontWeight.w800)),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _PhotoPreview(photo: _photo),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      OutlinedButton.icon(
+                        onPressed: _photoBusy ? null : () => _pickPhoto(ImageSource.camera),
+                        icon: const Icon(Icons.photo_camera_outlined),
+                        label: const Text('Chụp ảnh'),
+                      ),
+                      OutlinedButton.icon(
+                        onPressed: _photoBusy ? null : () => _pickPhoto(ImageSource.gallery),
+                        icon: const Icon(Icons.photo_library_outlined),
+                        label: const Text('Chọn từ thư viện'),
+                      ),
+                      if (_photo != null)
+                        TextButton(
+                          onPressed: _photoBusy
+                              ? null
+                              : () => setState(() {
+                                    _photo = null;
+                                    _photoError = '';
+                                  }),
+                          child: const Text('Gỡ ảnh'),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            if (_photoBusy) const Padding(padding: EdgeInsets.only(top: 8), child: LinearProgressIndicator()),
+            if (_photoError.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Text(_photoError, style: const TextStyle(color: Dora.red, fontWeight: FontWeight.w700)),
+              ),
+            const SizedBox(height: 10),
             TextField(controller: _notes, decoration: const InputDecoration(labelText: 'Ghi chú'), maxLines: 2),
             const SizedBox(height: 12),
             FilledButton(onPressed: _save, child: const Text('Lưu quán')),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PhotoPreview extends StatelessWidget {
+  const _PhotoPreview({this.photo});
+  final String? photo;
+
+  @override
+  Widget build(BuildContext context) {
+    final bytes = decodeDishPhoto(photo);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: ColoredBox(
+        color: const Color(0xFFE8F7FF),
+        child: SizedBox(
+          width: 88,
+          height: 88,
+          child: bytes != null
+              ? Image.memory(bytes, fit: BoxFit.cover)
+              : const Icon(Icons.add_a_photo_outlined, color: Dora.muted),
         ),
       ),
     );

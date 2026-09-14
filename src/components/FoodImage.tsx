@@ -1,6 +1,25 @@
 import { Utensils } from 'lucide-react'
 import type { Food } from '../lib/foods'
 
+type AtlasCell = { file: string; cols: number; rows: number; index: number }
+
+export function atlasFor(image: number): AtlasCell | null {
+  if (image < 0) return null
+  if (image >= 120) {
+    const i = image - 120
+    return { file: `food-common-${Math.floor(i / 12)}`, cols: 4, rows: 3, index: i % 12 }
+  }
+  if (image >= 72) {
+    const i = image - 72
+    return { file: `food-lunch-${Math.floor(i / 12)}`, cols: 4, rows: 3, index: i % 12 }
+  }
+  if (image >= 36) {
+    const i = image - 36
+    return { file: `food-expanded-${Math.floor(i / 12)}`, cols: 4, rows: 3, index: i % 12 }
+  }
+  return { file: `food-hd-${Math.floor(image / 4)}`, cols: 2, rows: 2, index: image % 4 }
+}
+
 export function FoodImage({ food }: { food: Food }) {
   if (food.photo) {
     return (
@@ -8,43 +27,35 @@ export function FoodImage({ food }: { food: Food }) {
         role="img"
         aria-label={food.name}
         className="food-image photo"
-        style={{ backgroundImage: `url(${food.photo})` }}
-      />
+      >
+        <img src={food.photo} alt="" />
+      </div>
     )
   }
-  if (food.image < 0) {
+  const cell = atlasFor(food.image)
+  if (!cell) {
     return (
       <div className="food-image custom-food-art" role="img" aria-label={food.name}>
         <Utensils size={48} />
       </div>
     )
   }
-  const common = food.image >= 120
-  const lunch = food.image >= 72 && !common
-  const expanded = food.image >= 36
-  const index = common ? (food.image - 120) % 12 : lunch ? (food.image - 72) % 12 : expanded ? (food.image - 36) % 12 : food.image % 4
-  const atlas = common
-    ? `food-common-${Math.floor((food.image - 120) / 12)}`
-    : lunch
-      ? `food-lunch-${Math.floor((food.image - 72) / 12)}`
-      : expanded
-        ? `food-expanded-${Math.floor((food.image - 36) / 12)}`
-        : `food-hd-${Math.floor(food.image / 4)}`
-  const yStops = common ? [0, 50, 100] : [0, 46, 92]
+  const col = cell.index % cell.cols
+  const row = Math.floor(cell.index / cell.cols)
   return (
-    <div
-      role="img"
-      aria-label={food.name}
-      className="food-image"
-      style={{
-        clipPath: common ? 'inset(0 0 4% 0)' : lunch ? 'inset(0 0 7% 0)' : undefined,
-        backgroundImage: `url(/${atlas}.webp)`,
-        backgroundSize: expanded ? '400% 300%' : '200% 200%',
-        backgroundPosition: expanded
-          ? `${(index % 4 / 3) * 100}% ${yStops[Math.floor(index / 4)]}%`
-          : `${(index % 2) * 100}% ${Math.floor(index / 2) * 100}%`,
-      }}
-    />
+    <div role="img" aria-label={food.name} className="food-image">
+      <img
+        alt=""
+        className="food-atlas"
+        src={`/${cell.file}.webp`}
+        style={{
+          width: `${cell.cols * 100}%`,
+          height: `${cell.rows * 100}%`,
+          left: `${-col * 100}%`,
+          top: `${-row * 100}%`,
+        }}
+      />
+    </div>
   )
 }
 

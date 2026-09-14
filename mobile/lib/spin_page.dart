@@ -51,6 +51,13 @@ class _SpinPageState extends State<SpinPage> {
   @override
   Widget build(BuildContext context) {
     final eligible = state.eligible;
+    final chest = [...eligible]..sort((a, b) {
+        final rarity = a.rarity.compareTo(b.rarity);
+        if (rarity != 0) return rarity;
+        final price = a.price.compareTo(b.price);
+        if (price != 0) return price;
+        return a.name.compareTo(b.name);
+      });
     final province = state.catalog.provinceById(state.spinProvince);
     return ListView(
       padding: const EdgeInsets.fromLTRB(14, 6, 14, 110),
@@ -344,14 +351,14 @@ class _SpinPageState extends State<SpinPage> {
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: eligible.length.clamp(0, 30),
+          itemCount: chest.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             childAspectRatio: 0.92,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
-          itemBuilder: (_, i) => FoodTile(food: eligible[i]),
+          itemBuilder: (_, i) => FoodTile(food: chest[i]),
         ),
       ],
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'models.dart';
+import 'photo.dart';
 import 'theme.dart';
 
 class AtlasCell {
@@ -35,11 +36,9 @@ class FoodArt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (food.photo != null && food.photo!.startsWith('data:image')) {
-      final bytes = Uri.parse(food.photo!).data?.contentAsBytes();
-      if (bytes != null) {
-        return Image.memory(bytes, fit: fit);
-      }
+    final bytes = decodeDishPhoto(food.photo);
+    if (bytes != null) {
+      return Image.memory(bytes, fit: fit);
     }
     final cell = atlasFor(food.image);
     if (cell == null) {
@@ -50,15 +49,34 @@ class FoodArt extends StatelessWidget {
     }
     final col = cell.index % cell.cols;
     final row = cell.index ~/ cell.cols;
-    final ax = cell.cols <= 1 ? 0.0 : -1 + (col / (cell.cols - 1)) * 2;
-    final ay = cell.rows <= 1 ? 0.0 : -1 + (row / (cell.rows - 1)) * 2;
-    return ClipRect(
-      child: Align(
-        alignment: Alignment(ax, ay),
-        widthFactor: 1 / cell.cols,
-        heightFactor: 1 / cell.rows,
-        child: Image.asset(cell.asset, fit: BoxFit.fill, filterQuality: FilterQuality.medium, gaplessPlayback: true),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final w = constraints.maxWidth.isFinite && constraints.maxWidth > 0 ? constraints.maxWidth : 150.0;
+        final h = constraints.maxHeight.isFinite && constraints.maxHeight > 0 ? constraints.maxHeight : w;
+        return ClipRect(
+          child: SizedBox(
+            width: w,
+            height: h,
+            child: Stack(
+              clipBehavior: Clip.hardEdge,
+              children: [
+                Positioned(
+                  left: -col * w,
+                  top: -row * h,
+                  width: cell.cols * w,
+                  height: cell.rows * h,
+                  child: Image.asset(
+                    cell.asset,
+                    fit: BoxFit.fill,
+                    filterQuality: FilterQuality.medium,
+                    gaplessPlayback: true,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -107,6 +107,7 @@ export default function App() {
                 price: place.price,
                 notes: place.notes,
                 image: place.image,
+                photo: place.photo,
               })
             }
             savePlaces([])
