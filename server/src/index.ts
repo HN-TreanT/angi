@@ -1,6 +1,9 @@
 import cors from 'cors'
 import express from 'express'
+import { loadLocalEnv, replyWithGemini } from './chat.ts'
 import { ensureSchema, pool, waitForDb } from './db.ts'
+
+loadLocalEnv()
 
 type PlaceRow = {
   id: string
@@ -167,6 +170,15 @@ app.delete('/api/places/:id', async (req, res, next) => {
       return
     }
     res.status(204).end()
+  } catch (error) {
+    next(error)
+  }
+})
+
+app.post('/api/chat', async (req, res, next) => {
+  try {
+    const result = await replyWithGemini(req.body)
+    res.json(result)
   } catch (error) {
     next(error)
   }

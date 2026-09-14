@@ -26,6 +26,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - ./server/.env
     environment:
       DATABASE_URL: postgres://baongocangi:baongocangi@db:5432/baongocangi
       PORT: "3001"

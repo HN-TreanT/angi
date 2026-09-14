@@ -20,7 +20,7 @@ export function createFoodSelector<T extends PricedMeal>(population: T[], target
   const clamped = Math.min(max, Math.max(min, target))
   const counts = new Map<number, number>()
   population.forEach((f) => counts.set(f.price, (counts.get(f.price) || 0) + 1))
-  const logs = population.map((f) => Math.log(f.price / 50))
+  const logs = population.map((f) => Math.log(Math.max(f.price, 1) / 50))
   const prior = logs.map((x, i) => -0.5 * (x / LOG_PRICE_SPREAD) ** 2 - Math.log(counts.get(population[i].price)!))
   function weights(tilt: number) {
     const logits = logs.map((x, i) => prior[i] + tilt * x)
@@ -75,5 +75,6 @@ export function spinProgress(progress: number, friction: number) {
 
 export function priceLabel(thousands: number | string) {
   const n = Number(thousands)
+  if (n === 0) return '0đ'
   return `${n.toLocaleString('vi-VN')}.000đ`
 }

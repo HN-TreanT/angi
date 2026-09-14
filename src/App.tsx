@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { ArrowUpRight, Leaf, MapPin, Sparkles, Star, Volume2, VolumeX } from 'lucide-react'
 import { FoodImage, MysteryArt } from './components/FoodImage'
 import { SkyDecor, SpinFX } from './components/Decor'
 import { PlacesLog } from './components/PlacesLog'
+import { Chatbot } from './components/Chatbot'
 import { foods, type Food } from './lib/foods'
 import {
   RARITY_COLORS,
@@ -23,7 +24,16 @@ import { createSpinSfx } from './lib/spin-sound'
 type Tab = 'spin' | 'places'
 type PoolMode = 'catalog' | 'eaten' | 'both'
 
-const BUDGETS = ['35', '50', '75', '100', '150'] as const
+const BUDGETS = Array.from({ length: 11 }, (_, i) => String(i * 10))
+const PLAYER_NAME_KEY = 'baongocangi-name'
+
+function loadPlayerName() {
+  try {
+    return sessionStorage.getItem(PLAYER_NAME_KEY)?.trim() ?? ''
+  } catch {
+    return ''
+  }
+}
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('spin')
@@ -31,6 +41,8 @@ export default function App() {
   const [apiOk, setApiOk] = useState<boolean | null>(null)
   const [apiError, setApiError] = useState('')
   const [budget, setBudget] = useState('50')
+  const [playerName, setPlayerName] = useState(loadPlayerName)
+  const [nameDraft, setNameDraft] = useState('')
   const [veg, setVeg] = useState(false)
   const [poolMode, setPoolMode] = useState<PoolMode>('catalog')
   const [eatAgainOnly, setEatAgainOnly] = useState(true)
@@ -169,6 +181,18 @@ export default function App() {
   function resetAddressFilters() {
     setSpinDistrict('')
     setSpinAddresses([])
+  }
+
+  function rememberPlayerName(event: FormEvent) {
+    event.preventDefault()
+    const name = nameDraft.trim()
+    if (!name) return
+    try {
+      sessionStorage.setItem(PLAYER_NAME_KEY, name)
+    } catch {
+      /* ignore */
+    }
+    setPlayerName(name)
   }
 
   const eligible = useMemo(() => population.filter((f) => !veg || f.veg), [population, veg])
@@ -341,7 +365,7 @@ export default function App() {
               <img className="title-cat" src="/doraemon2.png" alt="" />
               <div className="intro-copy">
                 <h1>MỞ HÒM ĂN TRƯA</h1>
-                <p>Xanh – đỏ – vàng, tick địa chỉ rồi quay món nka.</p>
+                <p>{playerName} hãy tick địa chỉ rồi quay món nka.</p>
               </div>
             </div>
             <p className="global-counter">
@@ -554,6 +578,31 @@ export default function App() {
           <span>{eligible.length} món trong pool hiện tại</span>
         </footer>
       </main>
+
+      {playerName && <Chatbot playerName={playerName} />}
+
+      {!playerName && (
+        <div className="modal-backdrop name-backdrop">
+          <form className="name-dialog" onSubmit={rememberPlayerName}>
+            <img className="name-cat" src="/doraemon2.png" alt="" />
+            <span className="winner-label">CHÀO BẠN</span>
+            <h2>Bạn tên gì?</h2>
+            <p>Nhập tên rồi mới tick địa chỉ và quay món nka.</p>
+            <input
+              autoFocus
+              required
+              maxLength={32}
+              value={nameDraft}
+              placeholder="Tên của bạn"
+              aria-label="Tên của bạn"
+              onChange={(e) => setNameDraft(e.target.value)}
+            />
+            <button type="submit" className="open-button">
+              Vào quay
+            </button>
+          </form>
+        </div>
+      )}
 
       {revealed && result && (
         <div className="modal-backdrop winner-backdrop" onClick={() => setRevealed(false)}>

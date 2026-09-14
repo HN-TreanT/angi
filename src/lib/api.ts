@@ -9,7 +9,14 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   })
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(text || `API ${response.status}`)
+    let message = text || `API ${response.status}`
+    try {
+      const parsed = JSON.parse(text) as { error?: string }
+      if (parsed.error) message = parsed.error
+    } catch {
+      /* keep raw text */
+    }
+    throw new Error(message)
   }
   if (response.status === 204) return undefined as T
   return response.json() as Promise<T>
@@ -33,4 +40,13 @@ export function deletePlaceApi(id: string) {
 
 export function healthCheck() {
   return request<{ ok: boolean }>('/health')
+}
+
+export type ChatTurn = { role: 'user' | 'model'; text: string }
+
+export function sendChat(messages: ChatTurn[], playerName: string) {
+  return request<{ text: string }>('/chat', {
+    method: 'POST',
+    body: JSON.stringify({ messages, playerName }),
+  })
 }
