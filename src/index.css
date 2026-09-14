@@ -123,12 +123,17 @@ header {
   display: grid;
   place-items: center;
   margin-right: 2px;
+  overflow: hidden;
   border-radius: 50%;
-  color: #fff;
-  background: linear-gradient(180deg, #5ec8f0, #00a0e9);
+  background: #e8f7ff;
   border: 3px solid #f6c51a;
   box-shadow: 0 4px 0 #0077c0;
   animation: bob 3.2s ease-in-out infinite;
+}
+.brand-icon img {
+  width: 120%;
+  height: 120%;
+  object-fit: contain;
 }
 .brand-dot { color: var(--dora-red); }
 .tabs { display: flex; gap: 8px; background: #e8f7ff; padding: 6px; border-radius: 999px; border: 2px solid #00a0e955; }
