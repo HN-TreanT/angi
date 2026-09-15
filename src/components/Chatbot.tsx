@@ -61,7 +61,7 @@ export function Chatbot({ playerName }: { playerName: string }) {
             </span>
             <div>
               <strong>Doraemon</strong>
-              <p>Hỏi món ăn trưa nha</p>
+              <p>Hỏi món ăn nha</p>
             </div>
             <button type="button" className="chat-close" onClick={() => setOpen(false)} aria-label="Đóng chat">
               <X size={18} />

@@ -46,7 +46,7 @@
     "sub": "Giòn cay • Quốc tế",
     "price": 65,
     "image": 6,
-    "quip": "Winner winner, chicken lunch."
+    "quip": "Winner winner, chicken dinner."
   },
   {
     "name": "Cơm chay",
@@ -65,7 +65,7 @@
   },
   {
     "name": "Cơm gà Hội An",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 45,
     "image": 9,
     "veg": false,
@@ -73,7 +73,7 @@
   },
   {
     "name": "Bún bò Huế",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 50,
     "image": 10,
     "veg": false,
@@ -81,7 +81,7 @@
   },
   {
     "name": "Hủ tiếu",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 40,
     "image": 11,
     "veg": false,
@@ -89,7 +89,7 @@
   },
   {
     "name": "Mì Quảng",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 45,
     "image": 12,
     "veg": false,
@@ -97,7 +97,7 @@
   },
   {
     "name": "Bún thịt nướng",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 40,
     "image": 13,
     "veg": false,
@@ -105,7 +105,7 @@
   },
   {
     "name": "Bánh cuốn",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 35,
     "image": 14,
     "veg": false,
@@ -113,7 +113,7 @@
   },
   {
     "name": "Bún đậu mắm tôm",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 55,
     "image": 15,
     "veg": false,
@@ -121,7 +121,7 @@
   },
   {
     "name": "Cơm rang dưa bò",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 50,
     "image": 16,
     "veg": false,
@@ -129,7 +129,7 @@
   },
   {
     "name": "Bò lúc lắc",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 85,
     "image": 17,
     "veg": false,
@@ -137,7 +137,7 @@
   },
   {
     "name": "Bánh xèo",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 50,
     "image": 18,
     "veg": false,
@@ -145,7 +145,7 @@
   },
   {
     "name": "Bánh đa cua",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 45,
     "image": 19,
     "veg": false,
@@ -153,7 +153,7 @@
   },
   {
     "name": "Mì xào bò",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 45,
     "image": 20,
     "veg": false,
@@ -161,7 +161,7 @@
   },
   {
     "name": "Bún cá",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 40,
     "image": 21,
     "veg": false,
@@ -169,7 +169,7 @@
   },
   {
     "name": "Gỏi cuốn",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 35,
     "image": 22,
     "veg": false,
@@ -177,7 +177,7 @@
   },
   {
     "name": "Cháo sườn",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 25,
     "image": 23,
     "veg": false,
@@ -185,7 +185,7 @@
   },
   {
     "name": "Ramen",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 100,
     "image": 24,
     "veg": false,
@@ -193,7 +193,7 @@
   },
   {
     "name": "Udon",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 85,
     "image": 25,
     "veg": false,
@@ -201,7 +201,7 @@
   },
   {
     "name": "Cơm cà ri Nhật",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 90,
     "image": 26,
     "veg": false,
@@ -209,7 +209,7 @@
   },
   {
     "name": "Tteokbokki",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 65,
     "image": 27,
     "veg": false,
@@ -217,7 +217,7 @@
   },
   {
     "name": "Burger bò",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 65,
     "image": 28,
     "veg": false,
@@ -225,7 +225,7 @@
   },
   {
     "name": "Mì Ý bò bằm",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 80,
     "image": 29,
     "veg": false,
@@ -233,7 +233,7 @@
   },
   {
     "name": "Pad Thai",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 75,
     "image": 30,
     "veg": false,
@@ -241,7 +241,7 @@
   },
   {
     "name": "Mì Tom Yum",
-    "sub": "Món ăn trưa",
+    "sub": "Món ăn",
     "price": 80,
     "image": 31,
     "veg": false,
@@ -290,140 +290,140 @@
     "name": "Cơm gà xối mỡ",
     "price": 55,
     "image": 39,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Bún riêu",
     "price": 45,
     "image": 42,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Bánh canh cua",
     "price": 60,
     "image": 43,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Bò né",
     "price": 75,
     "image": 44,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm gà teriyaki",
     "price": 85,
     "image": 45,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm heo chiên xù",
     "price": 95,
     "image": 46,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm chiên hải sản",
     "price": 85,
     "image": 47,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Mì vịt tiềm",
     "price": 95,
     "image": 48,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Kimbap",
     "price": 70,
     "image": 49,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Mì trộn Hàn Quốc",
     "price": 75,
     "image": 50,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Salad ức gà",
     "price": 85,
     "image": 51,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Mì Ý sốt kem bacon",
     "price": 115,
     "image": 52,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Lasagna bò",
     "price": 125,
     "image": 53,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Burger bò phô mai & khoai tây",
     "price": 120,
     "image": 54,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Pizza pepperoni",
     "price": 120,
     "image": 55,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm bò gyudon",
     "price": 110,
     "image": 56,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm cá saba nướng",
     "price": 110,
     "image": 57,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Mì soba Nhật",
     "price": 110,
     "image": 58,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm cà ri Thái",
     "price": 110,
     "image": 59,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Salad cá ngừ",
     "price": 110,
     "image": 60,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
@@ -431,49 +431,49 @@
     "price": 115,
     "image": 61,
     "veg": true,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Bò bít tết",
     "price": 180,
     "image": 62,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cá hồi áp chảo",
     "price": 190,
     "image": 63,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm lươn Nhật",
     "price": 180,
     "image": 64,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm bò nướng Hàn",
     "price": 150,
     "image": 65,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Cơm cá hồi teriyaki",
     "price": 150,
     "image": 66,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Poke cá hồi",
     "price": 160,
     "image": 67,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
@@ -487,21 +487,21 @@
     "name": "Pizza hải sản",
     "price": 160,
     "image": 69,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Mì Ý hải sản",
     "price": 160,
     "image": 70,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
     "name": "Lẩu bò cá nhân",
     "price": 160,
     "image": 71,
-    "sub": "Phần ăn trưa / người",
+    "sub": "Phần / người",
     "quip": ""
   },
   {
@@ -941,7 +941,7 @@
     "name": "Mì xá xíu",
     "price": 55,
     "sub": "Mì trứng & thịt xá xíu • Món Hoa",
-    "quip": "Sợi mì dài hơn thời gian nghỉ trưa.",
+    "quip": "Sợi mì dài hơn cả deadline.",
     "image": 127
   },
   {

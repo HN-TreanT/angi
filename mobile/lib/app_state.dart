@@ -46,6 +46,7 @@ class AppState extends ChangeNotifier {
   Food? result;
   int spins = 0;
   List<Food> reel = [];
+  int reelStopIndex = 0;
 
   final _spinPlayer = AudioPlayer();
   final _winPlayer = AudioPlayer();
@@ -59,6 +60,7 @@ class AppState extends ChangeNotifier {
     apiBase = ApiClient.defaultBaseUrl();
     api = ApiClient(baseUrl: apiBase);
     reel = catalog.foods.take(12).toList();
+    reelStopIndex = 0;
     await _spinPlayer.setReleaseMode(ReleaseMode.loop);
     await refreshPlaces();
     notifyListeners();
@@ -231,17 +233,19 @@ class AppState extends ChangeNotifier {
     result = null;
     notifyListeners();
     final winner = pick.choose(pool);
-    final tiles = 28 + Random().nextInt(10);
+    final before = 24 + Random().nextInt(8);
+    const after = 5;
     final built = <Food>[];
     final recent = <String>[];
-    for (var i = 0; i < tiles; i++) {
+    for (var i = 0; i < before + 1 + after; i++) {
       final alts = pool.where((f) => !recent.contains(f.key)).toList();
-      final food = i == tiles - 1 ? winner : pick.choose(alts.isEmpty ? pool : alts);
+      final food = i == before ? winner : pick.choose(alts.isEmpty ? pool : alts);
       built.add(food);
       recent.add(food.key);
       if (recent.length > 8) recent.removeAt(0);
     }
     reel = built;
+    reelStopIndex = before;
     if (soundOn) {
       await _spinPlayer.stop();
       await _spinPlayer.play(AssetSource('sounds/doraemon_song.mp3'));

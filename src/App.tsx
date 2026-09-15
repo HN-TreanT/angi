@@ -365,7 +365,7 @@ export default function App() {
             <div className="intro">
               <img className="title-cat" src="/doraemon2.png" alt="" />
               <div className="intro-copy">
-                <h1>MỞ HÒM ĂN TRƯA</h1>
+                <h1>MỞ HÒM MAY MẮN</h1>
                 <p>{playerName} hãy tick địa chỉ rồi quay món nka.</p>
               </div>
             </div>

@@ -16,30 +16,68 @@ class SpinPage extends StatefulWidget {
 }
 
 class _SpinPageState extends State<SpinPage> {
-  final _reel = ScrollController();
+  final _reel = ScrollController(keepScrollOffset: false);
   bool _filtersOpen = false;
+  var _busy = false;
 
   AppState get state => widget.state;
 
   Future<void> _spin() async {
-    final winner = await state.openCase();
-    if (winner == null || !mounted) return;
-    await Future<void>.delayed(const Duration(milliseconds: 80));
-    if (_reel.hasClients) {
-      await _reel.animateTo(
-        _reel.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 5600),
-        curve: Curves.easeOutCubic,
-      );
+    if (_busy || state.spinning) return;
+    setState(() => _busy = true);
+    try {
+      final winner = await state.openCase();
+      if (winner == null || !mounted) return;
+      await _resetReelToStart();
+      if (!mounted) return;
+      if (_reel.hasClients) {
+        final target = _offsetForWinner(state.reelStopIndex);
+        if (target > 0.5) {
+          await _reel.animateTo(
+            target,
+            duration: const Duration(milliseconds: 5600),
+            curve: Curves.easeOutCubic,
+          );
+          if (mounted && _reel.hasClients) {
+            _reel.jumpTo(target);
+          }
+        }
+      }
+      if (!mounted) return;
+      await state.finishSpin(winner);
+      if (mounted && state.result != null) {
+        await showDialog<void>(
+          context: context,
+          builder: (_) => WinnerDialog(food: state.result!),
+        );
+        state.dismissResult();
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _busy = false);
+      } else {
+        _busy = false;
+      }
     }
-    await state.finishSpin(winner);
-    if (mounted && state.result != null) {
-      await showDialog<void>(
-        context: context,
-        builder: (_) => WinnerDialog(food: state.result!),
-      );
-      state.dismissResult();
-    }
+  }
+
+  Future<void> _resetReelToStart() async {
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || !_reel.hasClients) return;
+    _reel.jumpTo(0);
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || !_reel.hasClients) return;
+    if (_reel.offset != 0) _reel.jumpTo(0);
+  }
+
+  double _offsetForWinner(int index) {
+    const tile = 168.0;
+    const gap = 8.0;
+    const pad = 12.0;
+    final step = tile + gap;
+    final viewport = _reel.position.viewportDimension;
+    final center = pad + index * step + tile / 2;
+    return (center - viewport / 2).clamp(0.0, _reel.position.maxScrollExtent);
   }
 
   @override
@@ -74,7 +112,7 @@ class _SpinPageState extends State<SpinPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'MỞ HÒM ĂN TRƯA',
+                    'MỞ HÒM MAY MẮN',
                     style: GoogleFonts.beVietnamPro(
                       fontWeight: FontWeight.w800,
                       fontSize: 22,
@@ -117,7 +155,7 @@ class _SpinPageState extends State<SpinPage> {
                 child: SizedBox.expand(),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
+                padding: const EdgeInsets.symmetric(vertical: 13),
                 child: ListView.separated(
                   controller: _reel,
                   scrollDirection: Axis.horizontal,
@@ -180,9 +218,9 @@ class _SpinPageState extends State<SpinPage> {
         ),
         const SizedBox(height: 18),
         OpenChestButton(
-          busy: state.spinning,
-          onPressed: state.spinning || eligible.isEmpty ? null : _spin,
-          label: state.spinning ? 'ĐANG QUAY...' : state.addressesPicked ? 'MỞ HÒM THEO ĐỊA CHỈ' : 'MỞ HÒM',
+          busy: _busy || state.spinning,
+          onPressed: _busy || state.spinning || eligible.isEmpty ? null : _spin,
+          label: _busy || state.spinning ? 'ĐANG QUAY...' : state.addressesPicked ? 'MỞ HÒM THEO ĐỊA CHỈ' : 'MỞ HÒM',
         ),
         const SizedBox(height: 16),
         Container(

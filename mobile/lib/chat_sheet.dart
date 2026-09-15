@@ -94,7 +94,7 @@ class _ChatSheetState extends State<ChatSheet> {
             ListTile(
               leading: const DoraAvatar(size: 42),
               title: Text('Doraemon', style: GoogleFonts.beVietnamPro(fontWeight: FontWeight.w800)),
-              subtitle: const Text('Hỏi món ăn trưa nha'),
+              subtitle: const Text('Hỏi món ăn nha'),
             ),
             Expanded(
               child: ListView(
